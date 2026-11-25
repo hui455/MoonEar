@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.content.Context
 import android.view.View
@@ -163,7 +163,7 @@ object DeviceDetailsPanel {
 
     /** Material 组件要求「我们 APK 的资源 + M3 主题」，缺一不可 */
     private fun themedAppCtx(ctx: android.content.Context): android.content.Context = try {
-        val base = ctx.createPackageContext("com.fxxkmoondrop.secret",
+        val base = ctx.createPackageContext("com.hui455.moonear",
                 android.content.Context.CONTEXT_IGNORE_SECURITY)
         android.view.ContextThemeWrapper(base, R.style.Theme_FxxkMoondrop)
     } catch (_: Throwable) { ctx }

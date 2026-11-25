@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 /**
  * 色彩规范：M3 语义角色取哪一套 tone 表。

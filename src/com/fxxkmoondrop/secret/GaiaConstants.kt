@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import java.util.UUID
 
@@ -73,7 +73,7 @@ object GaiaConstants {
     const val BATTERY_CASE = 3
 
     // Broadcast actions
-    const val ACTION_LE_ADDR_FOUND = "com.fxxkmoondrop.secret.ACTION_LE_ADDR_FOUND"
-    const val ACTION_REQ_LE_SCAN = "com.fxxkmoondrop.secret.ACTION_REQ_LE_SCAN"
+    const val ACTION_LE_ADDR_FOUND = "com.hui455.moonear.ACTION_LE_ADDR_FOUND"
+    const val ACTION_REQ_LE_SCAN = "com.hui455.moonear.ACTION_REQ_LE_SCAN"
     const val EXTRA_LE_ADDR = "addr"
 }

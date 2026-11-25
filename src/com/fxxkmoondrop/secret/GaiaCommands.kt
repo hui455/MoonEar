@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 /**
  * 官方服务命令库 —— 完整逆向自 Moondrop 官方 App 内嵌高通 gaiaclient（GAIA V3 / QTiL）

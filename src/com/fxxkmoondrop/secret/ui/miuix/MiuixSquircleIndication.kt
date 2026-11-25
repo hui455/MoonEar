@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret.ui.miuix
+package com.hui455.moonear.ui.miuix
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.SpringSpec

@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.app.Activity
 import android.content.Context
@@ -383,7 +383,7 @@ class M3Ui {
             tb.setBackgroundColor(pal.surface)
             tb.title = title
             tb.setTitleTextColor(pal.onSurface)
-            tb.setNavigationIcon(com.fxxkmoondrop.secret.R.drawable.abc_ic_ab_back_material)
+            tb.setNavigationIcon(com.hui455.moonear.R.drawable.abc_ic_ab_back_material)
             tb.setNavigationIconTint(pal.onSurface)
             tb.setNavigationContentDescription(Lang.t(act, "返回", "Back"))
             if (onBack != null) tb.setNavigationOnClickListener { onBack.run() }
@@ -396,7 +396,7 @@ class M3Ui {
         fun arrowBack(c: Context, pal: ThemeUtil.Palette, onBack: Runnable?): View {
             val b = MaterialButton(c, null,
                     com.google.android.material.R.attr.materialIconButtonStyle)
-            b.setIconResource(com.fxxkmoondrop.secret.R.drawable.abc_ic_ab_back_material)
+            b.setIconResource(com.hui455.moonear.R.drawable.abc_ic_ab_back_material)
             b.iconTint = ColorStateList.valueOf(pal.onSurface)
             b.contentDescription = Lang.t(c, "返回", "Back")
             b.layoutParams = LinearLayout.LayoutParams(dp(c, 48), dp(c, 48))
@@ -697,8 +697,8 @@ class M3Ui {
         @JvmStatic
         fun moduleDrawable(c: Context, resId: Int): Drawable? {
             val ctx = try {
-                if (c.packageName == "com.fxxkmoondrop.secret") c
-                else sSelfCtx ?: c.createPackageContext("com.fxxkmoondrop.secret",
+                if (c.packageName == "com.hui455.moonear") c
+                else sSelfCtx ?: c.createPackageContext("com.hui455.moonear",
                         Context.CONTEXT_IGNORE_SECURITY).also { sSelfCtx = it }
             } catch (t: Throwable) { c }
             return try { ctx.getDrawable(resId) } catch (t: Throwable) { null }

@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -32,7 +32,7 @@ class AliveReceiver : BroadcastReceiver() {
 
     companion object {
         private const val TAG = "MoondropHeadset"
-        private const val ACTION = "com.fxxkmoondrop.secret.KEEPALIVE"
+        private const val ACTION = "com.hui455.moonear.KEEPALIVE"
         private const val INTERVAL_MS = 30000L
 
         @JvmStatic

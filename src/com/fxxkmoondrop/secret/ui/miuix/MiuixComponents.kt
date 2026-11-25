@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret.ui.miuix
+package com.hui455.moonear.ui.miuix
 
 import android.os.Build
 
@@ -56,7 +56,7 @@ import top.yukonga.miuix.kmp.theme.MiuixTheme
  *
  * ## 规格对齐（重要）
  *
- * 这些尺寸**不是随手定的**，而是对齐现有 Material 轨 [com.fxxkmoondrop.secret.M3Ui]
+ * 这些尺寸**不是随手定的**，而是对齐现有 Material 轨 [com.hui455.moonear.M3Ui]
  * 的规格，两套主题才能有「同一款应用」的观感，而不是两个不同的应用：
  *
  * | 规格       | Material 轨          | 本文件        |

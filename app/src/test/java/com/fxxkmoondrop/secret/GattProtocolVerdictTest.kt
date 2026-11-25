@@ -1,6 +1,6 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
-import com.fxxkmoondrop.secret.GattProtocolVerdict.Verdict
+import com.hui455.moonear.GattProtocolVerdict.Verdict
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

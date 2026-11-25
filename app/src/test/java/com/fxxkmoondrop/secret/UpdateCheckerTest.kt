@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -110,14 +110,14 @@ class UpdateCheckerTest {
     @Test
     fun `下载链接按 tag 直接构造`() {
         assertEquals(
-                "https://github.com/bqj6666/FxxkMoondrop/releases/download/330-3.2.10/app-release.apk",
+                "https://github.com/hui455/MoonEar/releases/download/330-3.2.10/app-release.apk",
                 UpdateChecker.downloadUrl("330-3.2.10"))
     }
 
     @Test
     fun `预发布 tag 同样能构造下载链接`() {
         assertEquals(
-                "https://github.com/bqj6666/FxxkMoondrop/releases/download/ci-199/app-release.apk",
+                "https://github.com/hui455/MoonEar/releases/download/ci-199/app-release.apk",
                 UpdateChecker.downloadUrl("ci-199"))
     }
 

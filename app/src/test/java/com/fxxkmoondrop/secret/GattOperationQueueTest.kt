@@ -1,8 +1,8 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import org.junit.Assert.*
 import org.junit.Test
-import com.fxxkmoondrop.secret.GattOperationQueue.Kind
+import com.hui455.moonear.GattOperationQueue.Kind
 
 class GattOperationQueueTest {
     private class Clock {

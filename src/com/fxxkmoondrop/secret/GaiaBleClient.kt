@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -116,6 +116,11 @@ class GaiaBleClient private constructor(
 
     fun setDcBridge(cb: DeviceControlCallback?) { this.dcBridge = cb }  // alpha2.31
     private val handler = Handler(Looper.getMainLooper())
+    val gestures = TouchSession(
+        send = { feature, command, payload -> sendGaia(GaiaCommands.v3Packet(feature, command, payload)) },
+        scheduleTimeout = { task -> handler.postDelayed({ task() }, 8000) },
+        scheduleReadback = { task -> handler.postDelayed({ task() }, 500) },
+    )
     private val gattOperations = GattOperationQueue(
         { task, delay -> handler.postAtTime(Runnable { synchronized(this) { task.run() } },
             task, android.os.SystemClock.uptimeMillis() + delay) },
@@ -142,7 +147,8 @@ class GaiaBleClient private constructor(
         { readAncMap() },
         { readAncGetMap() },
         { left, right -> sendBatteryBroadcast(left, right) },
-        { dcBridge }
+        { dcBridge },
+        { feature, type, command, payload -> gestures.onPacket(type, command, payload, feature) }
     )
 
     // BLE 扫描
@@ -1102,6 +1108,7 @@ class GaiaBleClient private constructor(
         srcClient = null
         oldSrc?.clear()
         probe.reset()
+        gestures.reset()
     }
 
     private fun beginGattSession() {
@@ -1585,10 +1592,10 @@ class GaiaBleClient private constructor(
         val actualRight = if (right >= 0) right else BatteryStore.getGaiaRight(addr)
         try {
             val ctx = context ?: return
-            val i = android.content.Intent(com.fxxkmoondrop.secret.hook.FastPairHookEntry.ACTION_BATTERY_UPDATE)
+            val i = android.content.Intent(com.hui455.moonear.hook.FastPairHookEntry.ACTION_BATTERY_UPDATE)
             i.putExtra("left", actualLeft)
             i.putExtra("right", actualRight)
-            i.setPackage(com.fxxkmoondrop.secret.hook.FastPairHookEntry.PKG_GMS)
+            i.setPackage(com.hui455.moonear.hook.FastPairHookEntry.PKG_GMS)
             ctx.sendBroadcast(i)
             Log.d(GaiaConstants.TAG, "battery broadcast -> GMS: l=" + actualLeft + " r=" + actualRight)
         } catch (_: Throwable) { }

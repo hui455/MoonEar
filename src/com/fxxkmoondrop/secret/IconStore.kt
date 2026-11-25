@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.content.Context
 import android.util.Log
@@ -19,7 +19,7 @@ import java.nio.file.StandardCopyOption
  *
  * 现在改为双写：
  * 1. **主路径（无需 Root）**：写进本应用 `filesDir/moondrop_icon.png`，
- *    由 exported 的 [PrefsProvider]（`content://com.fxxkmoondrop.secret.prefs/moondrop_icon`）
+ *    由 exported 的 [PrefsProvider]（`content://com.hui455.moonear.prefs/moondrop_icon`）
  *    提供给 GMS 进程里的 Hook 读取 —— 与 `show_wind` / `lang` 走的是同一条既有通道；
  * 2. **兼容路径（有 Root 时才写）**：照旧写 GMS 老位置，老安装直接生效、无需重启。
  *
@@ -36,7 +36,7 @@ object IconStore {
     const val KEY_VER = "icon_ver"
 
     /** Hook 侧使用的读取 URI。 */
-    const val URI = "content://com.fxxkmoondrop.secret.prefs/moondrop_icon"
+    const val URI = "content://com.hui455.moonear.prefs/moondrop_icon"
 
     /** GMS 老路径（有 Root 时兼容写入）。 */
     const val GMS_LEGACY_PATH = "/data/user/0/com.google.android.gms/files/moondrop_icon.png"

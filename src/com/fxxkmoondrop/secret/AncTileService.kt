@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.content.ComponentName
 import android.content.Context
@@ -37,6 +37,7 @@ class AncTileService : TileService() {
         fun refreshAll(ctx: Context?) {
             val c = ctx ?: return
             try {
+                // activity-reference-allow: TileService requires a ComponentName; this uses the service class directly, not Activity navigation.
                 requestListeningState(c, ComponentName(c, AncTileService::class.java))
             } catch (t: Throwable) {
                 Log.d(TAG, "requestListeningState failed: $t")

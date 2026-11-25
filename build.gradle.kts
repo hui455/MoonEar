@@ -1,5 +1,6 @@
 // 根构建脚本：仅声明插件版本（apply false），模块各自 apply
 plugins {
+    id("io.github.takahirom.roborazzi") version "1.79.0" apply false
     id("com.android.application") version "9.4.1" apply false
     id("org.jetbrains.kotlin.android") version "2.4.10" apply false
     // 3.2.13: HyperOS 观感轨（UiStyle.MIUIX）需要 Compose。

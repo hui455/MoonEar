@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret.ui.miuix
+package com.hui455.moonear.ui.miuix
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,8 +10,8 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
-import com.fxxkmoondrop.secret.MiuixSurface
-import com.fxxkmoondrop.secret.ThemeUtil
+import com.hui455.moonear.MiuixSurface
+import com.hui455.moonear.ThemeUtil
 
 /**
  * HyperOS 轨的宿主 Fragment。

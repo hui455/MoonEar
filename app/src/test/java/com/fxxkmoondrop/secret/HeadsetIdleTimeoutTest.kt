@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull

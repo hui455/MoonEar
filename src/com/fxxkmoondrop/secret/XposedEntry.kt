@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.app.Activity
 import android.content.BroadcastReceiver
@@ -8,7 +8,7 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import com.fxxkmoondrop.secret.hook.FastPairHookEntry
+import com.hui455.moonear.hook.FastPairHookEntry
 import io.github.libxposed.api.XposedModule
 import io.github.libxposed.api.XposedModuleInterface.HotReloadedParam
 import io.github.libxposed.api.XposedModuleInterface.HotReloadingParam
@@ -33,7 +33,7 @@ class XposedEntry : XposedModule() {
         const val CMD_DC_GAIN = "set_gain"
         const val CMD_DC_LED = "set_led"
         const val KEY_ENTRY = "fxxk_moondrop_entry"
-        const val PKG_APP = "com.fxxkmoondrop.secret"
+        const val PKG_APP = "com.hui455.moonear"
         const val PKG_MOONDROP = "com.moondroplab.moondrop.moondrop_app"
         const val PKG_SETTINGS = "com.android.settings"
         const val PKG_BLUETOOTH = "com.android.bluetooth"
@@ -41,7 +41,9 @@ class XposedEntry : XposedModule() {
 
         private const val CLS_ACINFO = "com.qualcomm.qti.gaiaclient.core.data.ACInfo"
         private const val CLS_ANCV2_SUB = "com.moondroplab.moondrop.moondrop_app.native.handlers.AncV2Handler\$ancV2Subscriber\$1"
+        // activity-reference-allow: External Android Settings/GMS component in another package; requires its binary class name.
         private const val CLS_CONN_PREFS = "com.android.settings.connecteddevice.AdvancedConnectedDeviceDashboardFragment"
+        // activity-reference-allow: External Android Settings/GMS component in another package; requires its binary class name.
         private const val CLS_BT_DEVICE_DETAILS = "com.android.settings.bluetooth.BluetoothDeviceDetailsFragment"
 
         /** 官方详情页「耳机控制」切片（SlicePreference）key；本 ROM 没给它设 URI，官方那行是空的。 */
@@ -195,6 +197,7 @@ class XposedEntry : XposedModule() {
     /** 热重载时拿目标进程的 ClassLoader：模块在目标进程内运行，取当前 Application 的即可。 */
     private fun targetClassLoader(): ClassLoader? = try {
         val app = HookHelper.callStaticMethod(
+                // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
                 Class.forName("android.app.ActivityThread"), "currentApplication")
         (app as? Context)?.classLoader
     } catch (_: Throwable) { null }
@@ -204,7 +207,9 @@ class XposedEntry : XposedModule() {
     /** v3.17: hook 系统蓝牙 A2DP 连接状态：连接->静默拉起 Moondrop，断开->停止进程。 */
     private fun hookBluetooth(cl: ClassLoader) {
         try {
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val deviceCls = Class.forName("com.android.bluetooth.a2dp.A2dpService\$A2dpDevice", true, cl)
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val serviceCls = Class.forName("com.android.bluetooth.a2dp.A2dpService", true, cl)
             // 3-arg variant
             try {
@@ -249,12 +254,13 @@ class XposedEntry : XposedModule() {
             if (!DeviceMatcher.isMoondrop(name)) return
             if (to == 2) {
                 Log.d(TAG, "A2DP connected: $name -> silent launch + wake service")
+                // activity-reference-allow: External vendor-app compatibility hook; target classes are absent from this APK and use the host ClassLoader.
                 execSilent("am start -n $PKG_MOONDROP/.MainActivity --ez fxxk_silent true --exclude-from-recents")
-                execSilent("am broadcast -a com.fxxkmoondrop.secret.BT_EVENT --es evt connected")
+                execSilent("am broadcast -a com.hui455.moonear.BT_EVENT --es evt connected")
             } else if (to == 0) {
                 Log.d(TAG, "A2DP disconnected: $name -> stop app + wake service")
                 execSilent("am force-stop $PKG_MOONDROP")
-                execSilent("am broadcast -a com.fxxkmoondrop.secret.BT_EVENT --es evt disconnected")
+                execSilent("am broadcast -a com.hui455.moonear.BT_EVENT --es evt disconnected")
             }
         } catch (th: Throwable) {
             Log.e(TAG, "handleA2dpState error", th)
@@ -275,17 +281,20 @@ class XposedEntry : XposedModule() {
 
     private fun hookSettings(cl: ClassLoader) {
         try {
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val fragCls = Class.forName("com.android.settings.dashboard.DashboardFragment", true, cl)
             val m = fragCls.getDeclaredMethod("onCreatePreferences", Bundle::class.java, String::class.java)
             hook(m).intercept { chain ->
                 chain.proceed()
                 try {
                     val thisObj = chain.thisObject
+                    // activity-reference-allow: External Android Settings/GMS component in another package; requires its binary class name.
                     val connPrefsCls = Class.forName(CLS_CONN_PREFS, true, cl)
                     if (!connPrefsCls.isInstance(thisObj)) return@intercept HookGuard.nullSafe(chain)
                     val prefScreen = HookHelper.callMethod(thisObj, "getPreferenceScreen") ?: return@intercept HookGuard.nullSafe(chain)
                     if (HookHelper.callMethod(prefScreen, "findPreference", KEY_ENTRY) != null) return@intercept HookGuard.nullSafe(chain)
                     val context = HookHelper.callMethod(thisObj, "getContext") as? Context ?: return@intercept HookGuard.nullSafe(chain)
+                    // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
                     val prefCls = Class.forName("androidx.preference.Preference", true, cl)
                     val pref = prefCls.getConstructor(Context::class.java).newInstance(context)
                     HookHelper.callMethod(pref, "setKey", KEY_ENTRY)
@@ -297,7 +306,8 @@ class XposedEntry : XposedModule() {
                             if (zh) "FxxkMoondrop：降噪切换 / 耳机功能 / 连接弹窗"
                             else "FxxkMoondrop: ANC switch / headset features / pairing popup")
                     val intent = Intent()
-                    intent.setClassName(PKG_APP, "com.fxxkmoondrop.secret.MainActivity")
+                    // activity-reference-allow: Cross-process hook targets the module package explicitly; MainActivity is retained by R8.
+                    intent.setClassName(PKG_APP, "com.hui455.moonear.MainActivity")
                     HookHelper.callMethod(pref, "setIntent", intent)
                     HookHelper.callMethod(prefScreen, "addPreference", pref)
                     xlog("entry injected into ConnectionPreferences")
@@ -366,6 +376,7 @@ class XposedEntry : XposedModule() {
      */
     private fun hookOfficialSpatialRows(cl: ClassLoader) {
         try {
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val cls = Class.forName(
                     "com.android.settings.bluetooth.BluetoothDetailsSpatialAudioController", true, cl)
             val m = cls.getDeclaredMethod("isAvailable")
@@ -388,8 +399,10 @@ class XposedEntry : XposedModule() {
             xlog("hook official spatial isAvailable failed: " + th)
         }
         try {
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val sc = Class.forName("android.media.Spatializer", true, cl)
             // AudioDeviceAttributes 是 @SystemApi，编译期不可见，按名字加载
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val devCls = Class.forName("android.media.AudioDeviceAttributes", true, cl)
             // 可用性：官方的两道门禁都放开，官方那两行才会被创建并保留。
             val m1 = sc.getDeclaredMethod("isAvailableForDevice", devCls)
@@ -474,6 +487,7 @@ class XposedEntry : XposedModule() {
      */
     private fun hookOfficialRowGating(cl: ClassLoader) {
         try {
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val pCls = Class.forName("androidx.preference.Preference", true, cl)
             for (name in arrayOf("isVisible", "isEnabled")) {
                 val m = pCls.getDeclaredMethod(name)
@@ -533,7 +547,7 @@ class XposedEntry : XposedModule() {
     private fun userClosedTracking(ctx: Context?): Boolean {
         return try {
             val cur = ctx?.contentResolver?.query(android.net.Uri.parse(
-                    "content://com.fxxkmoondrop.secret.prefs/track_user_off"),
+                    "content://com.hui455.moonear.prefs/track_user_off"),
                     null, null, null, null)
             var v = 0
             if (cur != null) {
@@ -598,7 +612,7 @@ class XposedEntry : XposedModule() {
     private fun langZh(ctx: Context): Boolean {
         return try {
             val cur = ctx.contentResolver.query(
-                    android.net.Uri.parse("content://com.fxxkmoondrop.secret.prefs/lang"),
+                    android.net.Uri.parse("content://com.hui455.moonear.prefs/lang"),
                     null, null, null, null)
             var m = 0
             if (cur != null) {
@@ -623,8 +637,10 @@ class XposedEntry : XposedModule() {
             return
         }
         try {
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val prefCls = Class.forName("androidx.preference.Preference", true, cl)
             val bindM = prefCls.getDeclaredMethod("onBindViewHolder",
+                // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
                 Class.forName("androidx.preference.PreferenceViewHolder", true, cl))
             hook(bindM).intercept { chain ->
                 try {
@@ -682,7 +698,7 @@ class XposedEntry : XposedModule() {
                                 try {
                                     // 新挂上来的实例可能还带着默认（全显）状态，先按最近状态自刷一次。
                                     DeviceDetailsPanel.refreshFromLatest(v)
-                                    val uri = android.net.Uri.parse("content://com.fxxkmoondrop.secret.prefs/dc_cmd")
+                                    val uri = android.net.Uri.parse("content://com.hui455.moonear.prefs/dc_cmd")
                                     unregisterKey = uri
                                     val ob = object : android.database.ContentObserver(android.os.Handler(android.os.Looper.getMainLooper())) {
                                         override fun onChange(selfChange: Boolean) {
@@ -722,12 +738,14 @@ class XposedEntry : XposedModule() {
                 chain.proceed()
             }
 
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val fragCls = Class.forName("com.android.settings.dashboard.DashboardFragment", true, cl)
             val m = fragCls.getDeclaredMethod("onCreatePreferences", Bundle::class.java, String::class.java)
             hook(m).intercept { chain ->
                 chain.proceed()
                 try {
                     val thisObj = chain.thisObject
+                    // activity-reference-allow: External Android Settings/GMS component in another package; requires its binary class name.
                     val devCls = Class.forName(CLS_BT_DEVICE_DETAILS, true, cl)
                     if (!devCls.isInstance(thisObj)) return@intercept HookGuard.nullSafe(chain)
                     val prefScreen = HookHelper.callMethod(thisObj, "getPreferenceScreen") ?: return@intercept HookGuard.nullSafe(chain)
@@ -756,6 +774,7 @@ class XposedEntry : XposedModule() {
             }
             // 官方蓝牙详情页每次重排后，把我们的几行摆到官方位置（见 placeOurRows）。
             try {
+                // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
                 val cfgCls = Class.forName("com.android.settings.bluetooth.BluetoothDetailsConfigurableFragment", true, cl)
                 val orderM = cfgCls.getDeclaredMethod("updatePreferenceOrder")
                 hook(orderM).intercept { chain ->
@@ -785,6 +804,7 @@ class XposedEntry : XposedModule() {
             // 官方那两行就是我们的开关本体：点完让官方 controller 重读一次状态（它会来问我们
             // 耳机端的实际状态），官方那个开关的勾选态与头部追踪行才会立刻跟上。
             try {
+                // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
                 val spCls = Class.forName(
                         "com.android.settings.bluetooth.BluetoothDetailsSpatialAudioController", false, cl)
                 val clickM = spCls.declaredMethods.firstOrNull { it.name == "onPreferenceClick" }
@@ -1020,7 +1040,7 @@ class XposedEntry : XposedModule() {
                 }
             }
             ctx.contentResolver.registerContentObserver(
-                    android.net.Uri.parse("content://com.fxxkmoondrop.secret.prefs/dc_cmd"), false, ob)
+                    android.net.Uri.parse("content://com.hui455.moonear.prefs/dc_cmd"), false, ob)
             lastDetailObserver = ob
             lastDetailObserverCtx = ctx.applicationContext
 
@@ -1143,6 +1163,7 @@ class XposedEntry : XposedModule() {
      */
     private fun showGroupsWithVisibleChild(cl: ClassLoader, group: Any?) {
         val groupCls = try {
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             Class.forName("androidx.preference.PreferenceGroup", true, cl)
         } catch (th: Throwable) { return }
         val n = (HookHelper.callMethod(group, "getPreferenceCount") as? Int) ?: return
@@ -1189,6 +1210,7 @@ class XposedEntry : XposedModule() {
     private fun controlSliceUri(cl: ClassLoader, ctx: Context?, device: Any?): android.net.Uri? {
         if (ctx == null || device == null) return null
         return try {
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val bt = Class.forName("com.android.settingslib.bluetooth.BluetoothUtils", true, cl)
             val raw = HookHelper.callStaticMethod(bt, "getFastPairCustomizedField", device,
                     "HEARABLE_CONTROL_SLICE_WITH_WIDTH") as? String
@@ -1212,6 +1234,7 @@ class XposedEntry : XposedModule() {
      */
     private fun hookOfficialGatt(cl: ClassLoader) {
         runCatching {
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val gattCls = Class.forName("android.bluetooth.BluetoothGatt", false, cl)
             for (m in gattCls.declaredMethods) {
                 val n = m.name
@@ -1232,6 +1255,7 @@ class XposedEntry : XposedModule() {
             }
             // SPP/RFCOMM 通道：官方 EQ 走经典蓝牙 Socket，这里 hook OutputStream.write
             // 只打印「看起来像 Moondrop 帧」的数据（含 00 1D 或 0B FF 起始），避免刷屏。
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val osCls = Class.forName("java.io.OutputStream")
             for (m in osCls.declaredMethods) {
                 if (m.name != "write") continue
@@ -1264,6 +1288,7 @@ class XposedEntry : XposedModule() {
      */
     private fun hookSliceManager() {
         runCatching {
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val smCls = Class.forName("android.app.slice.SliceManager")
             val targets = smCls.declaredMethods.filter { it.name == "bindSlice" }
             if (targets.isEmpty()) { Log.i(TAG, "hookSliceManager: no bindSlice"); return }
@@ -1296,6 +1321,7 @@ class XposedEntry : XposedModule() {
 
     /** 探测某个 slice URI 是否能 bind 出内容（系统 SliceManager，反射以绕过隐藏 API）。 */
     private fun sliceHasContent(ctx: Context, uri: android.net.Uri): Boolean = try {
+        // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
         val smCls = Class.forName("android.app.slice.SliceManager")
         val sm = runCatching { ctx.getSystemService("slice") }.getOrNull()
         val bind = smCls.declaredMethods.firstOrNull {
@@ -1319,6 +1345,7 @@ class XposedEntry : XposedModule() {
     private fun attachControlSlice(cl: ClassLoader, ctx: Context?, screen: Any?, uri: android.net.Uri) {
         if (ctx == null || screen == null) return
         try {
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val ctrl = Class.forName("com.android.settings.slices.SlicePreferenceController", true, cl)
                     .getConstructor(Context::class.java, String::class.java)
                     .newInstance(ctx, KEY_SLICE_CONTROL)
@@ -1333,6 +1360,7 @@ class XposedEntry : XposedModule() {
                 try {
                     // Slice URI 不支持普通 content query（必然返回 null），要按官方方式 bindSlice。
                     // 编译期 stub 里没有 SliceManager.getInstance，走反射。
+                    // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
                     val smCls = Class.forName("android.app.slice.SliceManager")
                     // 隐藏 API 会伪装成 NoSuchMethod：getDeclaredMethod + setAccessible 再试一次
                     fun declared(name: String, vararg types: Class<*>): java.lang.reflect.Method? =
@@ -1382,7 +1410,9 @@ class XposedEntry : XposedModule() {
      */
     private fun hookDetailProfileVisibility(cl: ClassLoader) {
         try {
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val implCls = Class.forName("com.android.settings.bluetooth.BluetoothFeatureProviderImpl", true, cl)
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val devCls = Class.forName("android.bluetooth.BluetoothDevice", true, cl)
             val m = implCls.getDeclaredMethod("getInvisibleProfilePreferenceKeys", Context::class.java, devCls)
             hook(m).intercept { chain ->
@@ -1398,6 +1428,7 @@ class XposedEntry : XposedModule() {
             xlog("hookDetailProfileVisibility provider failed: $th")
         }
         try {
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val ctrlCls = Class.forName("com.android.settings.bluetooth.BluetoothDetailsProfilesController", true, cl)
             val m = ctrlCls.getDeclaredMethod("setInvisibleProfiles", List::class.java)
             hook(m).intercept { chain ->
@@ -1421,7 +1452,7 @@ class XposedEntry : XposedModule() {
      */
     private fun sendDeviceCommand(ctx: Context, cmd: DeviceDetailsPanel.Command) {
         try {
-            val b = android.net.Uri.parse("content://com.fxxkmoondrop.secret.prefs/dc_cmd").buildUpon()
+            val b = android.net.Uri.parse("content://com.hui455.moonear.prefs/dc_cmd").buildUpon()
             when (cmd) {
                 is DeviceDetailsPanel.Command.SetAncMode -> {
                     b.appendQueryParameter("action", "set_anc")
@@ -1459,10 +1490,11 @@ class XposedEntry : XposedModule() {
     private fun featEnabled(cl: ClassLoader, key: String): Boolean {
         return try {
             val app = HookHelper.callStaticMethod(
+                    // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
                     Class.forName("android.app.ActivityThread", true, cl), "currentApplication")
             val ctx = app as? Context ?: return true
             val cur = ctx.contentResolver.query(
-                    android.net.Uri.parse("content://com.fxxkmoondrop.secret.prefs/" + key),
+                    android.net.Uri.parse("content://com.hui455.moonear.prefs/" + key),
                     null, null, null, null) ?: return true
             cur.use {
                 if (it.moveToFirst()) it.getInt(it.getColumnIndexOrThrow("_value")) == 1 else true
@@ -1474,7 +1506,7 @@ class XposedEntry : XposedModule() {
 
     private fun fetchDcState(ctx: Context, deviceName: String?): ControlPanel.State? {
         try {
-            val b = android.net.Uri.parse("content://com.fxxkmoondrop.secret.prefs/dc_cmd")
+            val b = android.net.Uri.parse("content://com.hui455.moonear.prefs/dc_cmd")
                 .buildUpon().appendQueryParameter("action", "fetch")
             val cur = ctx.contentResolver.query(b.build(), null, null, null, null) ?: return null
             var anc = 0; var spatial = 0; var headTracking = -1; var gain = 0; var led = 0; var connected = 0
@@ -1529,6 +1561,7 @@ class XposedEntry : XposedModule() {
     private fun hookMoondrop(cl: ClassLoader) {
         // v3.16: silent launch -- fxxk_silent=true 时抑制 UI
         try {
+            // activity-reference-allow: External vendor-app compatibility hook; target classes are absent from this APK and use the host ClassLoader.
             val cls = Class.forName("com.moondroplab.moondrop.moondrop_app.MainActivity", true, cl)
             val m = cls.getDeclaredMethod("onCreate", Bundle::class.java)
             hook(m).intercept { chain ->
@@ -1557,6 +1590,7 @@ class XposedEntry : XposedModule() {
 
         // Application.onCreate -> register cmd receiver
         try {
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val m = Class.forName("android.app.Application", true, cl).getDeclaredMethod("onCreate")
             hook(m).intercept { chain ->
                 chain.proceed()
@@ -1574,6 +1608,7 @@ class XposedEntry : XposedModule() {
 
         // onAncMode -> broadcast
         try {
+            // activity-reference-allow: External vendor-app compatibility hook; target classes are absent from this APK and use the host ClassLoader.
             val cls = Class.forName(CLS_ANCV2_SUB, true, cl)
             val m = cls.getDeclaredMethod("onAncMode", Int::class.javaPrimitiveType)
             hook(m).intercept { chain ->
@@ -1591,6 +1626,7 @@ class XposedEntry : XposedModule() {
 
         // setCurrentMode -> UI to ANC_V2 mapping
         try {
+            // activity-reference-allow: External vendor-app compatibility hook; target classes are absent from this APK and use the host ClassLoader.
             val cls = Class.forName("com.qualcomm.qti.gaiaclient.core.gaia.qtil.plugins.v3.V3AncV2Plugin", true, cl)
             val m = cls.getDeclaredMethod("setCurrentMode", Int::class.javaPrimitiveType)
             hook(m).intercept { chain ->
@@ -1615,7 +1651,9 @@ class XposedEntry : XposedModule() {
 
         // AudioCuration onInfo -> broadcast
         try {
+            // activity-reference-allow: External vendor-app compatibility hook; target classes are absent from this APK and use the host ClassLoader.
             val acInfoCls = Class.forName(CLS_ACINFO, true, cl)
+            // activity-reference-allow: External vendor-app compatibility hook; target classes are absent from this APK and use the host ClassLoader.
             val cls = Class.forName("com.qualcomm.qti.gaiaclient.repository.audiocuration.AudioCurationRepositoryImpl\$1", true, cl)
             val m = cls.getDeclaredMethod("onInfo", acInfoCls, Any::class.java)
             hook(m).intercept { chain ->
@@ -1704,6 +1742,7 @@ class XposedEntry : XposedModule() {
 
     fun setAncV2Mode(cl: ClassLoader, i: Int) {
         if (i < 0 || i >= 6) return
+        // activity-reference-allow: External vendor-app compatibility hook; target classes are absent from this APK and use the host ClassLoader.
         val gaiaSvcCls = Class.forName(CLS_GAIA_SERVICE, true, cl)
         val qtil = HookHelper.callStaticMethod(gaiaSvcCls, "getQtilManager") ?: run {
             xlog("QtilManager null, fallback to AncV1")
@@ -1720,6 +1759,7 @@ class XposedEntry : XposedModule() {
     }
 
     fun fetchAncV2Mode(cl: ClassLoader) {
+        // activity-reference-allow: External vendor-app compatibility hook; target classes are absent from this APK and use the host ClassLoader.
         val gaiaSvcCls = Class.forName(CLS_GAIA_SERVICE, true, cl)
         val qtil = HookHelper.callStaticMethod(gaiaSvcCls, "getQtilManager") ?: return
         val plugin = HookHelper.callMethod(qtil, "getAncV2Plugin") ?: return
@@ -1732,6 +1772,7 @@ class XposedEntry : XposedModule() {
             Log.d(TAG, "setAncV1Mode ignore mode $i")
             return
         }
+        // activity-reference-allow: External vendor-app compatibility hook; target classes are absent from this APK and use the host ClassLoader.
         val gaiaAppCls = Class.forName(CLS_GAIA_APP, true, cl)
         val app = HookHelper.callStaticMethod(gaiaAppCls, "getInstance") ?: return
         val repo = HookHelper.getObjectField(app, "audioCurationRepository") ?: return
@@ -1740,9 +1781,11 @@ class XposedEntry : XposedModule() {
     }
 
     fun fetchAncV1Mode(cl: ClassLoader) {
+        // activity-reference-allow: External vendor-app compatibility hook; target classes are absent from this APK and use the host ClassLoader.
         val gaiaAppCls = Class.forName(CLS_GAIA_APP, true, cl)
         val app = HookHelper.callStaticMethod(gaiaAppCls, "getInstance") ?: return
         val repo = HookHelper.getObjectField(app, "audioCurationRepository") ?: return
+        // activity-reference-allow: External vendor-app compatibility hook; target classes are absent from this APK and use the host ClassLoader.
         val acInfoCls = Class.forName(CLS_ACINFO, true, cl)
         val acModeEnum = acInfoCls.enumConstants?.first { (it as Enum<*>).name == "MODE" } ?: return
         HookHelper.callMethod(repo, "fetchACInfo", moondropCtx, acModeEnum)

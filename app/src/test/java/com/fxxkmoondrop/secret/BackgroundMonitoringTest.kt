@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.bluetooth.BluetoothA2dp
 import android.bluetooth.BluetoothDevice
@@ -285,6 +285,6 @@ class BackgroundMonitoringTest {
     }
 
     companion object {
-        private const val KEEPALIVE = "com.fxxkmoondrop.secret.KEEPALIVE"
+        private const val KEEPALIVE = "com.hui455.moonear.KEEPALIVE"
     }
 }

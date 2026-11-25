@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret.ui.miuix
+package com.hui455.moonear.ui.miuix
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -98,7 +98,7 @@ internal fun MiuixOverview(bottomBar: (@Composable () -> Unit)? = null) {
         ) {
             Image(
                 painter = painterResource(
-                    com.fxxkmoondrop.secret.R.drawable.miuiix_earphone_case,
+                    com.hui455.moonear.R.drawable.miuiix_earphone_case,
                 ),
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
@@ -115,15 +115,15 @@ internal fun MiuixOverview(bottomBar: (@Composable () -> Unit)? = null) {
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             ActionButton(
-                iconRes = com.fxxkmoondrop.secret.R.drawable.ic_anc_off,
+                iconRes = com.hui455.moonear.R.drawable.ic_anc_off,
                 label = "关闭", selected = false, modifier = Modifier.weight(1f),
             )
             ActionButton(
-                iconRes = com.fxxkmoondrop.secret.R.drawable.ic_anc_on,
+                iconRes = com.hui455.moonear.R.drawable.ic_anc_on,
                 label = "降噪", selected = false, modifier = Modifier.weight(1f),
             )
             ActionButton(
-                iconRes = com.fxxkmoondrop.secret.R.drawable.ic_anc_passthrough,
+                iconRes = com.hui455.moonear.R.drawable.ic_anc_passthrough,
                 label = "透传", selected = false, modifier = Modifier.weight(1f),
             )
         }
@@ -137,15 +137,15 @@ internal fun MiuixOverview(bottomBar: (@Composable () -> Unit)? = null) {
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             ActionButton(
-                iconRes = com.fxxkmoondrop.secret.R.drawable.ic_battery_full,
+                iconRes = com.hui455.moonear.R.drawable.ic_battery_full,
                 label = "电量", selected = false, modifier = Modifier.weight(1f),
             )
             ActionButton(
-                iconRes = com.fxxkmoondrop.secret.R.drawable.ic_gain_2,
+                iconRes = com.hui455.moonear.R.drawable.ic_gain_2,
                 label = "音量", selected = false, modifier = Modifier.weight(1f),
             )
             ActionButton(
-                iconRes = com.fxxkmoondrop.secret.R.drawable.ic_devices,
+                iconRes = com.hui455.moonear.R.drawable.ic_devices,
                 label = "多点", selected = false, modifier = Modifier.weight(1f),
             )
         }

@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.util.Log
 
@@ -11,6 +11,7 @@ object HookHelper {
 
     /** Equivalent of XposedHelpers.findClass(name, classLoader) */
     fun findClass(name: String, classLoader: ClassLoader): Class<*> {
+        // activity-reference-allow: Hook helper resolves external host classes through the supplied ClassLoader, not app pages.
         return Class.forName(name, true, classLoader)
     }
 

@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.Manifest
 import android.app.Service
@@ -37,8 +37,8 @@ class HeadsetDetectService : Service() {
 
         private const val TAG = "MoondropHeadset"
         private const val POLL_MS = 5000L
-        const val ACTION_MANUAL_CONTROL = "com.fxxkmoondrop.secret.MANUAL_CONTROL"
-        const val ACTION_CONNECTION = "com.fxxkmoondrop.secret.HEADSET_CONNECTED"
+        const val ACTION_MANUAL_CONTROL = "com.hui455.moonear.MANUAL_CONTROL"
+        const val ACTION_CONNECTION = "com.hui455.moonear.HEADSET_CONNECTED"
 
         /** alpha1.17: 静态共享（服务进程与主界面同进程），供 HeadsetGate 复用已连接的 proxy
          *  ColorOS 上 BluetoothManager.getConnectedDevices(A2DP/HEADSET) 抛
@@ -301,8 +301,8 @@ class HeadsetDetectService : Service() {
             PopupGate.flushPendingIfReady()
             // alpha1.4: 通知主界面刷新电量显示
             try {
-                val bi = Intent("com.fxxkmoondrop.secret.STATE_UPDATED")
-                bi.setPackage("com.fxxkmoondrop.secret")
+                val bi = Intent("com.hui455.moonear.STATE_UPDATED")
+                bi.setPackage("com.hui455.moonear")
                 sendBroadcast(bi)
             } catch (_: Exception) { }
         }
@@ -312,8 +312,8 @@ class HeadsetDetectService : Service() {
             DeviceNotif.refreshAnc(this@HeadsetDetectService) // 第 5 项：ANC 通知高亮
             // alpha1.4: 通知主界面刷新降噪高亮
             try {
-                val bi = Intent("com.fxxkmoondrop.secret.STATE_UPDATED")
-                bi.setPackage("com.fxxkmoondrop.secret")
+                val bi = Intent("com.hui455.moonear.STATE_UPDATED")
+                bi.setPackage("com.hui455.moonear")
                 sendBroadcast(bi)
             } catch (_: Exception) { }
         }

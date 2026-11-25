@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -137,7 +137,9 @@ object MiuixSurface {
      */
     @JvmStatic
     fun runtimeAvailable(): Boolean = try {
+        // activity-reference-allow: Optional Compose/Miuix runtime-availability probe; no Activity or Fragment navigation.
         Class.forName("top.yukonga.miuix.kmp.theme.MiuixTheme")
+        // activity-reference-allow: Optional Compose/Miuix runtime-availability probe; no Activity or Fragment navigation.
         Class.forName("androidx.compose.runtime.Composer")
         true
     } catch (_: Throwable) {
@@ -214,7 +216,7 @@ internal fun MiuixSurface(
         //
         // BasicComponent 的 clickable 不传 indication, 自动取这个 Local,
         // 所以这是唯一生效点 (详见 MiuixSquircleIndication 的 KDoc)。
-        com.fxxkmoondrop.secret.ui.miuix.ProvideMiuixSquircleIndication {
+        com.hui455.moonear.ui.miuix.ProvideMiuixSquircleIndication {
             content()
         }
     }

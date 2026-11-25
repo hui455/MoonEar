@@ -1,4 +1,9 @@
-# MoonEar
+# MoonEar Custom
+
+This is [hui455's GPL-3.0 fork](https://github.com/hui455/MoonEar) of
+[MoonEar by bqj6666](https://github.com/bqj6666/FxxkMoondrop). See
+[CUSTOMIZATION.md](CUSTOMIZATION.md) for the earbud button editor, factory-default
+recovery, validation, and the remaining Space Travel 2 Ultra hardware checks.
 
 ![Android](https://img.shields.io/badge/Android-12L%2B-3DDC84?style=flat-square&labelColor=555555)
 ![Xposed](https://img.shields.io/badge/Xposed-API_102-E64A19?style=flat-square&labelColor=555555)

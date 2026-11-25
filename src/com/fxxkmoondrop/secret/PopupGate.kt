@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.app.KeyguardManager
 import android.content.Context
@@ -20,7 +20,7 @@ class PopupGate {
         private val userClosedKeys = HashSet<String?>()
 
         // ── Google Fast Pair 弹窗（FastPairHook 模块）──
-        private const val ACTION_FP_TRIGGER = "com.fxxkmoondrop.secret.FASTPAIR_TRIGGER"
+        private const val ACTION_FP_TRIGGER = "com.hui455.moonear.FASTPAIR_TRIGGER"
         private const val EXTRA_FP_DEVICE_NAME = "device_name"
         private const val EXTRA_FP_BATTERY_LEFT = "battery_left"
         private const val EXTRA_FP_BATTERY_RIGHT = "battery_right"

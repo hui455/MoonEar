@@ -1,6 +1,6 @@
-package com.fxxkmoondrop.secret.ui.miuix
+package com.hui455.moonear.ui.miuix
 
-import com.fxxkmoondrop.secret.MiuixSurface
+import com.hui455.moonear.MiuixSurface
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test

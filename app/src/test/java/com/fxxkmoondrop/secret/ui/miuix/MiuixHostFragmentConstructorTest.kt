@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret.ui.miuix
+package com.hui455.moonear.ui.miuix
 
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue

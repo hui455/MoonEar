@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 /**
  * 水月雨 SPP 均衡器载荷编解码（0A 05 读 / 0A 06 写）。

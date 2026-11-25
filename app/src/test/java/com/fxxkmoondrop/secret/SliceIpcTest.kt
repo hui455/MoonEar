@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import java.io.File
 import org.junit.Assert.*
@@ -100,7 +100,7 @@ class SliceIpcTest {
         assertTrue(query.contains("Binder.restoreCallingIdentity(token)"))
         assertTrue(provider.contains("override fun getTypeAnonymous(uri: Uri): String? = null"))
         val panel = source("hook/HalfSheetPanelHook.kt")
-        assertTrue(panel.contains("content://com.fxxkmoondrop.secret.prefs/dc_cmd"))
+        assertTrue(panel.contains("content://com.hui455.moonear.prefs/dc_cmd"))
         assertFalse(panel.contains("sendBroadcast"))
     }
 

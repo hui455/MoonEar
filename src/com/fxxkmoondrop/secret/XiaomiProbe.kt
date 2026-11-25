@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.content.Context
 import android.content.pm.PackageManager
@@ -198,6 +198,7 @@ class XiaomiProbe private constructor() {
         private fun readProps(): Map<String, String> {
             val out = HashMap<String, String>(4)
             val get: Method = try {
+                // activity-reference-allow: Read hidden Android framework APIs for ROM diagnostics; no app-page navigation.
                 Class.forName("android.os.SystemProperties").getDeclaredMethod("get", String::class.java)
             } catch (t: Throwable) {
                 Log.w(TAG, "SystemProperties 不可用，跳过属性判据", t)
@@ -235,6 +236,7 @@ class XiaomiProbe private constructor() {
                     ?.takeIf { it != ClassLoader.getSystemClassLoader() }
                     ?.let { cl ->
                         runCatching {
+                            // activity-reference-allow: Read hidden Android framework APIs for ROM diagnostics; no app-page navigation.
                             cl.loadClass("android.app.AppGlobals")
                                     .getDeclaredMethod("getInitialApplication")
                                     .invoke(null) as? Context

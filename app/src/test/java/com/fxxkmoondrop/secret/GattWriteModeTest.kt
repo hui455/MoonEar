@@ -1,10 +1,10 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE
 import android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE
 import android.bluetooth.BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 import android.bluetooth.BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
-import com.fxxkmoondrop.secret.GattOperationQueue.Kind
+import com.hui455.moonear.GattOperationQueue.Kind
 import org.junit.Assert.*
 import org.junit.Test
 

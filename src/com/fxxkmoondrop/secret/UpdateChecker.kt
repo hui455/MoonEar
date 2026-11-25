@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.content.Context
 import android.util.Log
@@ -34,13 +34,13 @@ object UpdateChecker {
 
     private const val TAG = "UpdateChecker"
 
-    private const val REPO = "https://github.com/bqj6666/FxxkMoondrop"
-    private const val API_LATEST = "https://api.github.com/repos/bqj6666/FxxkMoondrop/releases/latest"
-    private const val API_LIST = "https://api.github.com/repos/bqj6666/FxxkMoondrop/releases?per_page=30"
-    private const val ATOM = "https://github.com/bqj6666/FxxkMoondrop/releases.atom"
+    private const val REPO = "https://github.com/hui455/MoonEar"
+    private const val API_LATEST = "https://api.github.com/repos/hui455/MoonEar/releases/latest"
+    private const val API_LIST = "https://api.github.com/repos/hui455/MoonEar/releases?per_page=30"
+    private const val ATOM = "https://github.com/hui455/MoonEar/releases.atom"
     /** 按 tag 精确取某一次发布（「更新日志」要的是当前已安装版本，不是最新版）。 */
     private const val API_TAG =
-            "https://api.github.com/repos/bqj6666/FxxkMoondrop/releases/tags/"
+            "https://api.github.com/repos/hui455/MoonEar/releases/tags/"
 
     private const val ASSET = "app-release.apk"
 

@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -24,7 +24,7 @@ class HeadsetGate {
         private const val TAG = "HeadsetGate"
 
         /** 异步补扫找到 MAC 后广播（extra: mac） */
-        const val ACTION_MAC_UPDATED = "com.fxxkmoondrop.secret.MAC_UPDATED"
+        const val ACTION_MAC_UPDATED = "com.hui455.moonear.MAC_UPDATED"
         private const val SP_LAST_MAC = "last_connected_mac"
         private const val SCAN_THROTTLE_MS = 3000L
 

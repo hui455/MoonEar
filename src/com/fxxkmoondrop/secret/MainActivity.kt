@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.app.Activity
 import android.app.Application
@@ -17,7 +17,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.navigationevent.NavigationEventDispatcher
 import androidx.navigationevent.NavigationEventDispatcherOwner
-import com.fxxkmoondrop.secret.ui.miuix.MiuixHostFragment
+import com.hui455.moonear.ui.miuix.MiuixHostFragment
 
 /**
  * alpha2.12: 官方单 Activity 架构 —— 三页 Fragment 切换，底部导航常驻（M3 官方 fade 仅作用于内容区）。
@@ -37,7 +37,7 @@ import com.fxxkmoondrop.secret.ui.miuix.MiuixHostFragment
 //
 // ⚠️ 与导航功能无关，不影响任何现有页面架构与行为。
 class MainActivity : BaseFragmentActivity(), NavigationEventDispatcherOwner,
-    com.fxxkmoondrop.secret.ui.miuix.MiuixNavHost {
+    com.hui455.moonear.ui.miuix.MiuixNavHost {
 
     // ⚠️ 必须写成 Kotlin 的 `override val`（不是 Java 风格的 override fun
     // getNavigationEventDispatcher()）—— 该接口是用 Kotlin 声明的
@@ -844,8 +844,7 @@ class MainActivity : BaseFragmentActivity(), NavigationEventDispatcherOwner,
                  else SettingsFragment()
             3 -> if (miuix) MiuixHostFragment.newInstance(MiuixHostFragment.Screen.ABOUT)
                  else AboutFragment()
-            else -> if (miuix) MiuixHostFragment.newInstance(MiuixHostFragment.Screen.OVERVIEW)
-                    else OverviewFragment()
+            else -> MoonDashboardFragment()
         }
         val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
         // alpha2.53: 对齐 org.lsposed.manager 的切页动效 ——

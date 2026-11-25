@@ -1,12 +1,13 @@
 plugins {
     id("com.android.application")
+    id("io.github.takahirom.roborazzi")
     // 3.2.13: AGP 9.0 起 Kotlin 支持由 AGP 内置，
     // 不能再声明 org.jetbrains.kotlin.android（会直接报错，见 kotl.in/gradle/agp-built-in-kotlin）
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
-    namespace = "com.fxxkmoondrop.secret"
+    namespace = "com.hui455.moonear"
     // 3.2.13: 35 -> 37。Miuix（HyperOS 观感轨）全部版本的
     // aar-metadata.properties 都写死 minCompileSdk=37，没有 35 可用的版本。
     // 升的是**编译期**可见 API，targetSdk 仍是 36，运行时行为不变。
@@ -15,11 +16,11 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.fxxkmoondrop.secret"
+        applicationId = "com.hui455.moonear"
         minSdk = 32
         targetSdk = 37
-        versionCode = 402
-        versionName = "3.4.2"
+        versionCode = 40201
+        versionName = "3.4.2-custom.1"
 
         // DexKit 自带 4 个 ABI 的 libdexkit.so；x86/x86_64 只服务模拟器，
         // 剔除后单 APK 省约 0.8MB（模块只跑在真机上）。
@@ -30,9 +31,12 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = rootProject.file("app2.keystore")
+            enableV1Signing = true
+            enableV2Signing = true
+            enableV3Signing = true
+            storeFile = rootProject.file(providers.environmentVariable("MOONEAR_KEYSTORE").getOrElse("app2.keystore"))
             storePassword = providers.environmentVariable("FXXK_KEYPASS").orElse(providers.gradleProperty("fxxkKeypass")).getOrElse("")
-            keyAlias = providers.gradleProperty("fxxkKeyAlias").getOrElse("fxxk")
+            keyAlias = providers.environmentVariable("MOONEAR_KEY_ALIAS").orElse(providers.gradleProperty("fxxkKeyAlias")).getOrElse("fxxk")
             keyPassword = providers.environmentVariable("FXXK_KEYPASS").orElse(providers.gradleProperty("fxxkKeypass")).getOrElse("")
         }
     }
@@ -48,7 +52,7 @@ android {
             //   - 真正的风险只有「LSPosed 按字符串加载入口」与「manifest 声明的组件
             //     被系统按字符串实例化」两类，已在 proguard-rules.pro 里按需 keep。
             //
-            // ⚠️ 规则刻意不写 `-keep class com.fxxkmoondrop.secret.** { *; }`，
+            // ⚠️ 规则刻意不写 `-keep class com.hui455.moonear.** { *; }`，
             // 那等于放弃 R8 对我们代码的全部优化，体积收益会大幅缩水。
             isMinifyEnabled = true
             proguardFiles(
@@ -100,6 +104,7 @@ android {
 
     testOptions {
         unitTests.isReturnDefaultValues = true
+        unitTests.isIncludeAndroidResources = true
     }
 
     packaging {
@@ -178,6 +183,9 @@ dependencies {
     implementation("com.materialkolor:material-color-utilities:5.0.1")
 
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.robolectric:robolectric:4.14.1")
+    testImplementation("androidx.test:core:1.6.1")
+    testImplementation("io.github.takahirom.roborazzi:roborazzi:1.79.0")
     // 测试专用：android.jar 里的 org.json 是桩（且 unitTests.isReturnDefaultValues=true
     // 会让它静默返回默认值），必须用真实实现才能验证 release 响应的解析。
     // 仅测试期生效，不进 APK、不增加运行时体积。

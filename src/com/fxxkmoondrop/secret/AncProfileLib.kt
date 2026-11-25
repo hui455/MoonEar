@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 /**
  * alpha2.26.9: ANC 设备码型号档案库。

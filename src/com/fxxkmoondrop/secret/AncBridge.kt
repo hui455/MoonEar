@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.content.Context
 import android.content.Intent
@@ -17,10 +17,10 @@ class AncBridge {
         val MODE_NAMES = AncProfileLib.ANC_MODE_NAMES_FULL
 
         /** alpha1.20: 跨进程模式状态同步（应用 -> GMS 弹窗高亮；GMS -> 应用请求当前值） */
-        const val ACTION_FP_MODE_STATE = "com.fxxkmoondrop.secret.FASTPAIR_MODE_STATE"
-        const val ACTION_FP_MODE_REQUEST = "com.fxxkmoondrop.secret.FASTPAIR_MODE_REQUEST"
+        const val ACTION_FP_MODE_STATE = "com.hui455.moonear.FASTPAIR_MODE_STATE"
+        const val ACTION_FP_MODE_REQUEST = "com.hui455.moonear.FASTPAIR_MODE_REQUEST"
         /** alpha2.22: app -> GMS 广播 ANC 能力状态（驱动弹窗降噪按钮三态） */
-        const val ACTION_FP_ANC_STATUS = "com.fxxkmoondrop.secret.FASTPAIR_ANC_STATUS"
+        const val ACTION_FP_ANC_STATUS = "com.hui455.moonear.FASTPAIR_ANC_STATUS"
 
         /** 广播用 Context（由 MainActivity / HeadsetDetectService 绑定，取 applicationContext） */
         @Volatile

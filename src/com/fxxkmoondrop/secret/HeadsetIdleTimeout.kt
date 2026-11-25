@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 /** Tracks elapsed-realtime inactivity, including a cold start without any headset. */
 internal class HeadsetIdleTimeout(private var lastSeenMs: Long) {

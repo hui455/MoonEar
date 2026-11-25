@@ -1,8 +1,8 @@
-id=com.fxxkmoondrop.secret
-name=FxxkMoondrop
-version=3.4.2
-author=bqj6666
-homepage=https://github.com/bqj6666/FxxkMoondrop
+id=com.hui455.moonear
+name=MoonEar Custom
+version=3.4.2-custom.1
+author=bqj6666; hui455 (custom fork)
+homepage=https://github.com/hui455/MoonEar
 description=Moondrop 蓝牙耳机助手
 minApiVersion=101
 targetApiVersion=102

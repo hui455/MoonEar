@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.util.Log
 import org.luckypray.dexkit.DexKitBridge
@@ -83,6 +83,7 @@ object DexKitLocator {
         if (key in DEX_FIRST) {
             val located = locate(cl, key)
             if (located != null) {
+                // activity-reference-allow: Resolve obfuscated external GMS classes in the host ClassLoader; no app-page navigation.
                 runCatching { return Class.forName(located, true, cl) }
                     .onFailure { Log.w(TAG, "DexKit 定位 $located 但加载失败，回退 $hardcodedName", it) }
             } else {
@@ -90,13 +91,16 @@ object DexKitLocator {
             }
         }
 
+        // activity-reference-allow: Resolve obfuscated external GMS classes in the host ClassLoader; no app-page navigation.
         runCatching { return Class.forName(hardcodedName, true, cl) }
 
         val located = locate(cl, key)
         if (located != null && located != hardcodedName) {
+            // activity-reference-allow: Resolve obfuscated external GMS classes in the host ClassLoader; no app-page navigation.
             runCatching { return Class.forName(located, true, cl) }
                 .onFailure { Log.w(TAG, "DexKit 定位 $located 但加载失败，回退 $hardcodedName", it) }
         }
+        // activity-reference-allow: Resolve obfuscated external GMS classes in the host ClassLoader; no app-page navigation.
         return Class.forName(hardcodedName, true, cl)
     }
 
@@ -114,6 +118,7 @@ object DexKitLocator {
         runCatching {
             val dtesName = locate(cl, DTES)
             if (dtesName != null) {
+                // activity-reference-allow: Resolve obfuscated external GMS classes in the host ClassLoader; no app-page navigation.
                 val dtes = Class.forName(dtesName, false, cl)
                 val t = dtes.declaredFields.firstOrNull { it.name == "c" }?.type
                 if (t != null && t.name != "java.lang.Object") {
@@ -123,6 +128,7 @@ object DexKitLocator {
             }
         }
         Log.w(TAG, "dtok 推导失败，回退硬编码 " + hardcodedName)
+        // activity-reference-allow: Resolve obfuscated external GMS classes in the host ClassLoader; no app-page navigation.
         return Class.forName(hardcodedName, true, cl)
     }
 

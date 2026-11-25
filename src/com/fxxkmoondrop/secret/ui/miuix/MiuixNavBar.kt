@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret.ui.miuix
+package com.hui455.moonear.ui.miuix
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
@@ -41,9 +41,9 @@ internal fun MiuixNavBar(
         color = MiuixTheme.colorScheme.surface,
         showDivider = true,
     ) {
-        NavItem(selected, TAB_OVERVIEW, com.fxxkmoondrop.secret.R.drawable.ic_home, "概览", onSelect)
-        NavItem(selected, TAB_SETTINGS, com.fxxkmoondrop.secret.R.drawable.ic_settings, "设置", onSelect)
-        NavItem(selected, TAB_ABOUT, com.fxxkmoondrop.secret.R.drawable.ic_info, "关于", onSelect)
+        NavItem(selected, TAB_OVERVIEW, com.hui455.moonear.R.drawable.ic_home, "概览", onSelect)
+        NavItem(selected, TAB_SETTINGS, com.hui455.moonear.R.drawable.ic_settings, "设置", onSelect)
+        NavItem(selected, TAB_ABOUT, com.hui455.moonear.R.drawable.ic_info, "关于", onSelect)
     }
 }
 

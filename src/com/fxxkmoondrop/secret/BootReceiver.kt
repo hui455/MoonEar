@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.bluetooth.BluetoothA2dp
 import android.bluetooth.BluetoothAdapter
@@ -63,7 +63,7 @@ class BootReceiver : BroadcastReceiver() {
 
     companion object {
         private const val TAG = "MoondropHeadset"
-        const val ACTION_BT_EVENT = "com.fxxkmoondrop.secret.BT_EVENT"
+        const val ACTION_BT_EVENT = "com.hui455.moonear.BT_EVENT"
 
         internal fun resolveAclName(
             deviceName: String?, address: String?, bondedName: (String) -> String?,

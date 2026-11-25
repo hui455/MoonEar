@@ -1,8 +1,8 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothProfile
-import com.fxxkmoondrop.secret.hook.FastPairHookEntry
+import com.hui455.moonear.hook.FastPairHookEntry
 import java.io.File
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -73,7 +73,7 @@ class HookIpcTest {
         assertEquals(1, Regex("senderPermission = null").findAll(fastPair).count())
         assertTrue(fastPair.contains("reg(ctx, btReceiver, acl, exportedFlag, senderPermission = null)"))
         val service = source("HeadsetDetectService.kt")
-        assertFalse(service.contains("f.addAction(\"com.fxxkmoondrop.secret.FASTPAIR_"))
+        assertFalse(service.contains("f.addAction(\"com.hui455.moonear.FASTPAIR_"))
         assertFalse(service.contains("f.addAction(AncBridge.ACTION_FP_MODE_REQUEST)"))
         assertTrue(source("GaiaBleClient.kt").contains("HookIpc.registerInternal(ctx, leAddrReceiver, f)"))
         assertTrue(source("HookIpc.kt").contains("PERMISSION, null, Context.RECEIVER_NOT_EXPORTED"))

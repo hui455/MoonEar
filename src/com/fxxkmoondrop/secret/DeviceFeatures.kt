@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 /**
  * 设备功能表（官方 App 的 feature 枚举，值取自反编译的 r14）。

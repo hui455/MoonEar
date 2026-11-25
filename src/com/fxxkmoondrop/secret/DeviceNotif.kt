@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.Manifest
 import android.app.NotificationChannel
@@ -53,7 +53,7 @@ object DeviceNotif {
     private const val ID_OLD_ANC = 0x4D02
 
     /** 通知按钮点击 -> 广播动作（由 NotifActionReceiver 处理）。 */
-    const val ACTION_ANC = "com.fxxkmoondrop.secret.NOTIF_ANC"
+    const val ACTION_ANC = "com.hui455.moonear.NOTIF_ANC"
     const val EXTRA_MODE = "anc_mode"
 
     /** 上一次真正发出去的内容指纹：一样就不重发，避免把用户展开的通知打回折叠态。 */

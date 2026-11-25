@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.app.PendingIntent
 import android.app.slice.SliceManager
@@ -71,7 +71,7 @@ class HearableSliceProvider : SliceProvider() {
     }
 
     companion object {
-        const val AUTHORITY = "com.fxxkmoondrop.secret.slices"
+        const val AUTHORITY = "com.hui455.moonear.slices"
 
         fun uriFor(address: String, name: String?): Uri =
             Uri.parse("content://$AUTHORITY/hearable").buildUpon()

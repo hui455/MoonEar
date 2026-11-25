@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -20,10 +20,10 @@ import java.util.concurrent.atomic.AtomicBoolean
 class EnvProbe private constructor() {
     companion object {
         /** 探测广播：应用 -> GMS(FastPairHook) */
-        const val ACTION_FASTPAIR_PING = "com.fxxkmoondrop.secret.FASTPAIR_PING"
+        const val ACTION_FASTPAIR_PING = "com.hui455.moonear.FASTPAIR_PING"
 
         /** 探测广播：FastPairHook -> 应用 */
-        const val ACTION_FASTPAIR_PONG = "com.fxxkmoondrop.secret.FASTPAIR_PONG"
+        const val ACTION_FASTPAIR_PONG = "com.hui455.moonear.FASTPAIR_PONG"
 
         private const val PKG_GMS = "com.google.android.gms"
         /** PING 等待窗口。GMS 冷启动（刚开机 / 刚重启 GMS 进程）时 PING→PONG 实测迟到约 8.4s，

@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.bluetooth.BluetoothA2dp
 import android.bluetooth.BluetoothDevice
@@ -60,8 +60,8 @@ class HeadsetReceiver : BroadcastReceiver() {
                 PopupGate.clear("AA:BB:CC:DD:EE:FF", "Moondrop Golden Ages 2")
                 // alpha2.4: 通知主界面刷新（电量行/GAIA/耳机连接同步复原）
                 try {
-                    val bi = Intent("com.fxxkmoondrop.secret.STATE_UPDATED")
-                    bi.setPackage("com.fxxkmoondrop.secret")
+                    val bi = Intent("com.hui455.moonear.STATE_UPDATED")
+                    bi.setPackage("com.hui455.moonear")
                     c.sendBroadcast(bi)
                 } catch (_: Exception) { }
                 Log.i(TAG, "sim state restored after popup closed")
@@ -83,9 +83,9 @@ class HeadsetReceiver : BroadcastReceiver() {
                 Log.i(TAG, "battery $name ($address) = $level%")
                 // alpha2.27: 同步刷新 GMS 弹窗电量显示
                 try {
-                    val bi = Intent(com.fxxkmoondrop.secret.hook.FastPairHookEntry.ACTION_BATTERY_UPDATE)
+                    val bi = Intent(com.hui455.moonear.hook.FastPairHookEntry.ACTION_BATTERY_UPDATE)
                     bi.putExtra("sys", level)
-                    bi.setPackage(com.fxxkmoondrop.secret.hook.FastPairHookEntry.PKG_GMS)
+                    bi.setPackage(com.hui455.moonear.hook.FastPairHookEntry.PKG_GMS)
                     c.sendBroadcast(bi)
                 } catch (_: Throwable) { }
             }
@@ -151,8 +151,8 @@ class HeadsetReceiver : BroadcastReceiver() {
         private const val TAG = "MoondropHeadset"
 
         // alpha1.15: FastPair 弹窗三模式按钮 -> GAIA 降噪控制
-        private const val ACTION_FP_MODE = "com.fxxkmoondrop.secret.FASTPAIR_MODE_CHANGED"
-        private const val ACTION_FP_SHEET_CLOSED = "com.fxxkmoondrop.secret.FASTPAIR_SHEET_CLOSED"
+        private const val ACTION_FP_MODE = "com.hui455.moonear.FASTPAIR_MODE_CHANGED"
+        private const val ACTION_FP_SHEET_CLOSED = "com.hui455.moonear.FASTPAIR_SHEET_CLOSED"
         private const val EXTRA_FP_MODE = "mode"
     }
 }

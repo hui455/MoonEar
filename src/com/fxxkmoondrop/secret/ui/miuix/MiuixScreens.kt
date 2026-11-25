@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret.ui.miuix
+package com.hui455.moonear.ui.miuix
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -6,11 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import com.fxxkmoondrop.secret.KeepAlive
-import com.fxxkmoondrop.secret.Lang
-import com.fxxkmoondrop.secret.ThemeUtil
-import com.fxxkmoondrop.secret.MainActivity
-import com.fxxkmoondrop.secret.UiStyle
+import com.hui455.moonear.KeepAlive
+import com.hui455.moonear.Lang
+import com.hui455.moonear.ThemeUtil
+import com.hui455.moonear.MainActivity
+import com.hui455.moonear.UiStyle
 
 /**
  * 概览页（Miuix 版）—— 实装见 [MiuixOverview]。

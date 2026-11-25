@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import io.github.libxposed.api.XposedInterface
 import org.junit.Assert.assertEquals

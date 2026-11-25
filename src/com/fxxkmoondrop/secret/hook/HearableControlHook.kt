@@ -1,14 +1,14 @@
-package com.fxxkmoondrop.secret.hook
+package com.hui455.moonear.hook
 
-import com.fxxkmoondrop.secret.HookIpc
+import com.hui455.moonear.HookIpc
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.fxxkmoondrop.secret.DexKitLocator
-import com.fxxkmoondrop.secret.HookHelper
+import com.hui455.moonear.DexKitLocator
+import com.hui455.moonear.HookHelper
 import io.github.libxposed.api.XposedModule
 import java.util.concurrent.ConcurrentHashMap
 
@@ -78,7 +78,7 @@ object HearableControlHook {
     private const val EV_SET_ANC_STATE = 2
 
     /** 弹窗三模式按钮那条既有通道：App 侧 `HeadsetReceiver` 收到即 `AncBridge.setAncMode()`。 */
-    private const val ACTION_MODE_CHANGED = "com.fxxkmoondrop.secret.FASTPAIR_MODE_CHANGED"
+    private const val ACTION_MODE_CHANGED = "com.hui455.moonear.FASTPAIR_MODE_CHANGED"
     private const val EXTRA_MODE = "mode"
 
     /** 激活重试间隔与次数（GMS 进程起来后 nearby 模块才可用）。 */
@@ -86,10 +86,10 @@ object HearableControlHook {
     private const val ACTIVATE_TRIES = 20
 
     /** 本模块自己的应用包名（用于把广播定向发给 App，不广播给全系统）。 */
-    private const val PKG_APP = "com.fxxkmoondrop.secret"
+    private const val PKG_APP = "com.hui455.moonear"
 
     /** 「向 App 索要当前模式」的既有通道：App 侧 AncBridge 收到即回 MODE_STATE。 */
-    private const val ACTION_MODE_REQUEST = "com.fxxkmoondrop.secret.FASTPAIR_MODE_REQUEST"
+    private const val ACTION_MODE_REQUEST = "com.hui455.moonear.FASTPAIR_MODE_REQUEST"
 
     /** 索要模式的节流间隔（模式未知时才发）。 */
     private const val MODE_REQ_INTERVAL_MS = 10000L
@@ -237,6 +237,7 @@ object HearableControlHook {
     /** Locate the actual Fast Pair provider, including overridden transport call methods. */
     private fun hookEmptySlice(xm: XposedModule) {
         runCatching {
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val cpCls = Class.forName("android.content.ContentProvider")
             val targets = cpCls.declaredMethods.filter { it.name == "attachInfo" }
             if (targets.isEmpty()) throw NoSuchMethodException("attachInfo not found")
@@ -270,7 +271,7 @@ object HearableControlHook {
                     chain.args.getOrNull(1) == "bind_slice")
                     extras?.getParcelable<android.net.Uri>("slice_uri") else null
                 val eligible = ctx != null && uri != null &&
-                    com.fxxkmoondrop.secret.HearableSliceProvider.isHostUri(uri.scheme, uri.authority, uri.path) &&
+                    com.hui455.moonear.HearableSliceProvider.isHostUri(uri.scheme, uri.authority, uri.path) &&
                     runCatching { HookIpc.enforceCaller(ctx) }.isSuccess
                 val res = chain.proceed()
                 if (!eligible) return@intercept res
@@ -278,7 +279,7 @@ object HearableControlHook {
                 val slice = bundle?.getParcelable<android.app.slice.Slice>("slice")
                 if (!slice?.items.isNullOrEmpty()) return@intercept res
                 val replacement = runCatching {
-                    com.fxxkmoondrop.secret.HearableSliceProvider.buildFor(ctx, uri)
+                    com.hui455.moonear.HearableSliceProvider.buildFor(ctx, uri)
                 }.getOrNull() ?: return@intercept res
                 (bundle?.let { android.os.Bundle(it) } ?: android.os.Bundle()).apply {
                     putParcelable("slice", replacement)
@@ -846,6 +847,7 @@ object HearableControlHook {
     private fun gmsContext(cl: ClassLoader): Context? {
         appCtx?.let { return it }
         try {
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val at = Class.forName("android.app.ActivityThread", true, cl)
             val app = HookHelper.callStaticMethod(at, "currentApplication")
             if (app is Context) {

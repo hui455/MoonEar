@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import androidx.annotation.MainThread
 import androidx.lifecycle.DefaultLifecycleObserver

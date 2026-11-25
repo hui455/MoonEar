@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 /**
  * 蓝牙设备详情页里「我们自己那三行」的显示规则。

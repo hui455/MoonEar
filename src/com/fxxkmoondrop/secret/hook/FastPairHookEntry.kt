@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret.hook
+package com.hui455.moonear.hook
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -22,15 +22,15 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.widget.ImageView
-import com.fxxkmoondrop.secret.DexKitLocator
-import com.fxxkmoondrop.secret.DeviceMatcher
-import com.fxxkmoondrop.secret.AncProfileLib
-import com.fxxkmoondrop.secret.M3Ui
-import com.fxxkmoondrop.secret.HookGuard
-import com.fxxkmoondrop.secret.HookHelper
-import com.fxxkmoondrop.secret.HookIpc
-import com.fxxkmoondrop.secret.BatteryStore
-import com.fxxkmoondrop.secret.GaiaBleClient
+import com.hui455.moonear.DexKitLocator
+import com.hui455.moonear.DeviceMatcher
+import com.hui455.moonear.AncProfileLib
+import com.hui455.moonear.M3Ui
+import com.hui455.moonear.HookGuard
+import com.hui455.moonear.HookHelper
+import com.hui455.moonear.HookIpc
+import com.hui455.moonear.BatteryStore
+import com.hui455.moonear.GaiaBleClient
 import android.util.Log
 import io.github.libxposed.api.XposedModule
 import java.io.ByteArrayOutputStream
@@ -77,9 +77,10 @@ class FastPairHookEntry {
         // alpha1.14fix4: 拿模块自身 context（读取内置默认图标 assets）
         try {
             val app = HookHelper.callStaticMethod(
+                    // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
                     Class.forName("android.app.ActivityThread"), "currentApplication")
             if (app is Context) {
-                sModCtx = app.createPackageContext("com.fxxkmoondrop.secret",
+                sModCtx = app.createPackageContext("com.hui455.moonear",
                         Context.CONTEXT_IGNORE_SECURITY)
                 Log.d(TAG, "[FastPairHook] mod ctx ready: " + sModCtx)
                 // alpha2.52: GMS 进程侧也恢复指纹探测的学习/拒绝名单，
@@ -537,9 +538,10 @@ class FastPairHookEntry {
             var ctx = sModCtx
             if (ctx == null) {
                 val app = HookHelper.callStaticMethod(
+                        // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
                         Class.forName("android.app.ActivityThread"), "currentApplication")
                 if (app is Context) {
-                    ctx = app.createPackageContext("com.fxxkmoondrop.secret",
+                    ctx = app.createPackageContext("com.hui455.moonear",
                             Context.CONTEXT_IGNORE_SECURITY)
                     sModCtx = ctx
                 }
@@ -764,7 +766,7 @@ class FastPairHookEntry {
             for (m in 0..6) {
                 val holder = decor.findViewWithTag<android.view.View>("fxxk_mode_btn_" + m) ?: continue
                 val bgV = holder.findViewWithTag<android.view.View>("fxxk_mode_bg") ?: holder
-                val mp = try { com.fxxkmoondrop.secret.ThemeUtil.Palette(act) } catch (_: Throwable) { null }
+                val mp = try { com.hui455.moonear.ThemeUtil.Palette(act) } catch (_: Throwable) { null }
                 val on = m == mode
                 val fill = when {
                     mp == null -> if (on) 0x66FFFFFF else 0x29FFFFFF
@@ -891,7 +893,7 @@ class FastPairHookEntry {
             var showWind = true
             try {
                 val cur = act.applicationContext.contentResolver.query(
-                        Uri.parse("content://com.fxxkmoondrop.secret.prefs/show_wind"),
+                        Uri.parse("content://com.hui455.moonear.prefs/show_wind"),
                         null, null, null, null)
                 if (cur != null) {
                     try {
@@ -1039,6 +1041,7 @@ class FastPairHookEntry {
             }
 
             val btn: android.widget.TextView = try {
+                // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
                 Class.forName("com.google.android.material.button.MaterialButton")
                     .getConstructor(android.content.Context::class.java)
                     .newInstance(act) as android.widget.TextView
@@ -1079,9 +1082,11 @@ class FastPairHookEntry {
                         val argB = android.os.Bundle()
                         argB.putString("device_address", devAddr)
                         val i = android.content.Intent()
+                        // activity-reference-allow: External Android Settings/GMS component in another package; requires its binary class name.
                         i.setClassName("com.android.settings",
                                 "com.android.settings.Settings\$BluetoothDeviceDetailActivity")
                         i.putExtra(":settings:show_fragment",
+                                // activity-reference-allow: External Android Settings/GMS component in another package; requires its binary class name.
                                 "com.android.settings.bluetooth.BluetoothDeviceDetailsFragment")
                         i.putExtra(":settings:show_fragment_args", argB)
                         i.putExtra(":settings:show_fragment_as_subsetting", true)
@@ -1092,7 +1097,8 @@ class FastPairHookEntry {
                     }
                     Log.d(TAG, "[FastPairHook] settings btn: no Moondrop addr, fallback to MainActivity")
                     val i2 = android.content.Intent()
-                    i2.setClassName(PKG_APP, "com.fxxkmoondrop.secret.MainActivity")
+                    // activity-reference-allow: Cross-process hook targets the module package explicitly; MainActivity is retained by R8.
+                    i2.setClassName(PKG_APP, "com.hui455.moonear.MainActivity")
                     i2.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
                     act.startActivity(i2)
                     Log.d(TAG, "[FastPairHook] settings btn -> launch MainActivity (fallback)")
@@ -1150,10 +1156,10 @@ class FastPairHookEntry {
         // 不用 MaterialButton —— 它每次状态变化都会重设 shapeAppearance，把选中态的圆角方形盖回圆形。
         val iconPx = (prof.modeItemIconPx * d).toInt()
         val themed = sModCtx?.let {
-            android.view.ContextThemeWrapper(it, com.fxxkmoondrop.secret.R.style.Theme_FxxkMoondrop)
+            android.view.ContextThemeWrapper(it, com.hui455.moonear.R.style.Theme_FxxkMoondrop)
         }
         val bctx: android.content.Context = themed ?: act
-        val pal = try { com.fxxkmoondrop.secret.ThemeUtil.Palette(bctx) } catch (_: Throwable) { null }
+        val pal = try { com.hui455.moonear.ThemeUtil.Palette(bctx) } catch (_: Throwable) { null }
         val bg = android.view.View(act)
         bg.tag = "fxxk_mode_bg"
         // 初始态：圆形（未选中）。形状由 GradientDrawable 持有，任何状态刷新都改不动
@@ -1341,6 +1347,7 @@ class FastPairHookEntry {
 
     private fun registerReceiverWhenReady(cl: ClassLoader) {
         try {
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val atClass = Class.forName("android.app.ActivityThread", true, cl)
             val at = HookHelper.callStaticMethod(atClass, "currentActivityThread")
             if (at != null) {
@@ -1357,6 +1364,7 @@ class FastPairHookEntry {
             Log.d(TAG, "[FastPairHook] direct register path failed: " + t)
         }
         try {
+            // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
             val appCls = Class.forName("android.app.Application", true, cl)
             val m = appCls.getDeclaredMethod("attach", Context::class.java)
             sModule?.hook(m)?.intercept { chain ->
@@ -1609,7 +1617,7 @@ class FastPairHookEntry {
     private fun langZh(ctx: android.content.Context): Boolean {
         return try {
             val cur = ctx.contentResolver.query(
-                    Uri.parse("content://com.fxxkmoondrop.secret.prefs/lang"),
+                    Uri.parse("content://com.hui455.moonear.prefs/lang"),
                     null, null, null, null)
             var m = 0
             if (cur != null) {
@@ -1624,6 +1632,7 @@ class FastPairHookEntry {
     private fun gmsContext(): Context? {
         return try {
             val app = HookHelper.callStaticMethod(
+                    // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
                     Class.forName("android.app.ActivityThread"), "currentApplication")
             if (app is Context) app else null
         } catch (_: Throwable) {
@@ -1748,10 +1757,11 @@ class FastPairHookEntry {
     private fun readFeatureToggle(cl: ClassLoader, key: String): Boolean {
         return try {
             val app = HookHelper.callStaticMethod(
+                    // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
                     Class.forName("android.app.ActivityThread", true, cl), "currentApplication")
             val ctx = app as? Context ?: return true
             val cur = ctx.contentResolver.query(
-                    android.net.Uri.parse("content://com.fxxkmoondrop.secret.prefs/" + key),
+                    android.net.Uri.parse("content://com.hui455.moonear.prefs/" + key),
                     null, null, null, null) ?: return true
             cur.use {
                 if (it.moveToFirst()) it.getInt(it.getColumnIndexOrThrow("_value")) == 1 else true
@@ -1839,6 +1849,7 @@ class FastPairHookEntry {
         Log.d(TAG, "[FastPairHook] manual payload len=" + payload.size + " name=" + name)
 
         val intent = Intent()
+        // activity-reference-allow: External Android Settings/GMS component in another package; requires its binary class name.
         intent.setClassName(ctx, "com.google.android.gms.nearby.discovery.fastpair.HalfSheetActivity")
         intent.putExtra("com.google.android.gms.nearby.discovery.fastpair.EXTRA_HALF_SHEET_TYPE", "SPOT")
         intent.putExtra("com.google.android.gms.nearby.discovery.HALF_SHEET", payload)
@@ -1908,9 +1919,10 @@ class FastPairHookEntry {
         sModCtx?.let { return it }
         return try {
             val app = HookHelper.callStaticMethod(
+                    // activity-reference-allow: Resolve external Android/GMS host framework or UI classes for an Xposed hook; not app-page navigation.
                     Class.forName("android.app.ActivityThread"), "currentApplication")
             if (app is Context) {
-                val c = app.createPackageContext("com.fxxkmoondrop.secret",
+                val c = app.createPackageContext("com.hui455.moonear",
                         Context.CONTEXT_IGNORE_SECURITY)
                 sModCtx = c
                 c
@@ -2054,25 +2066,25 @@ class FastPairHookEntry {
             }
         }
         const val PKG_GMS = "com.google.android.gms"
-        const val PKG_APP = "com.fxxkmoondrop.secret"
-        const val ACTION_TRIGGER = "com.fxxkmoondrop.secret.FASTPAIR_TRIGGER"
+        const val PKG_APP = "com.hui455.moonear"
+        const val ACTION_TRIGGER = "com.hui455.moonear.FASTPAIR_TRIGGER"
         const val EXTRA_DEVICE_NAME = "device_name"
         /** 首选自定义图标路径（放到 Download 目录即可被读取） */
         const val ICON_PATH = "/data/user/0/com.google.android.gms/files/moondrop_icon.png"
         /** 3.0.5: 应用内图标的跨进程读取入口（无需 Root）。 */
-        const val ICON_URI = "content://com.fxxkmoondrop.secret.prefs/moondrop_icon"
+        const val ICON_URI = "content://com.hui455.moonear.prefs/moondrop_icon"
         const val MOD_ASSET_ICON = "ga2_icon.png" // alpha1.14fix4: 内置默认图标
 
         /** v1.0: 三模式按钮 -> FxxkMoondrop 应用（GAIA 降噪控制） */
-        const val ACTION_MODE_CHANGED = "com.fxxkmoondrop.secret.FASTPAIR_MODE_CHANGED"
+        const val ACTION_MODE_CHANGED = "com.hui455.moonear.FASTPAIR_MODE_CHANGED"
         const val EXTRA_MODE = "mode"
         /** alpha1.20: 弹窗按钮高亮双向同步 */
-        const val ACTION_MODE_STATE = "com.fxxkmoondrop.secret.FASTPAIR_MODE_STATE"
-        const val ACTION_MODE_REQUEST = "com.fxxkmoondrop.secret.FASTPAIR_MODE_REQUEST"
+        const val ACTION_MODE_STATE = "com.hui455.moonear.FASTPAIR_MODE_STATE"
+        const val ACTION_MODE_REQUEST = "com.hui455.moonear.FASTPAIR_MODE_REQUEST"
         /** alpha2.22: app -> GMS 广播 ANC 能力状态，驱动弹窗降噪按钮三态 */
-        const val ACTION_ANC_STATUS = "com.fxxkmoondrop.secret.FASTPAIR_ANC_STATUS"
+        const val ACTION_ANC_STATUS = "com.hui455.moonear.FASTPAIR_ANC_STATUS"
         /** alpha2.27: app -> GMS 广播电量更新（左耳/右耳/系统值） */
-        const val ACTION_BATTERY_UPDATE = "com.fxxkmoondrop.secret.FASTPAIR_BATTERY_UPDATE"
+        const val ACTION_BATTERY_UPDATE = "com.hui455.moonear.FASTPAIR_BATTERY_UPDATE"
         const val EXTRA_ANC_STATUS = "status"
         @JvmField @Volatile
         var sLastMode = -1 // 最近一次收到的模式状态（-1=未知/不高亮）
@@ -2087,14 +2099,14 @@ class FastPairHookEntry {
         var sBarUiModesSig = ""
 
         /** 【对接广播】弹窗点击"确定"后发出（extra: device_name），应用监听后执行真实连接 */
-        const val ACTION_CONNECTED = "com.fxxkmoondrop.secret.FASTPAIR_CONNECTED"
+        const val ACTION_CONNECTED = "com.hui455.moonear.FASTPAIR_CONNECTED"
         // alpha2.7: GMS HalfSheet 弹窗关闭回调（模拟连接弹窗消失后应用恢复模拟状态）
-        const val ACTION_FP_SHEET_CLOSED = "com.fxxkmoondrop.secret.FASTPAIR_SHEET_CLOSED"
-        const val ACTION_LE_ADDR_FOUND = "com.fxxkmoondrop.secret.ACTION_LE_ADDR_FOUND"
-        const val ACTION_REQ_LE_SCAN = "com.fxxkmoondrop.secret.ACTION_REQ_LE_SCAN"
+        const val ACTION_FP_SHEET_CLOSED = "com.hui455.moonear.FASTPAIR_SHEET_CLOSED"
+        const val ACTION_LE_ADDR_FOUND = "com.hui455.moonear.ACTION_LE_ADDR_FOUND"
+        const val ACTION_REQ_LE_SCAN = "com.hui455.moonear.ACTION_REQ_LE_SCAN"
         /** alpha1.34: 应用探测本模块是否激活（PING -> PONG 回显） */
-        const val ACTION_FASTPAIR_PING = "com.fxxkmoondrop.secret.FASTPAIR_PING"
-        const val ACTION_FASTPAIR_PONG = "com.fxxkmoondrop.secret.FASTPAIR_PONG"
+        const val ACTION_FASTPAIR_PING = "com.hui455.moonear.FASTPAIR_PING"
+        const val ACTION_FASTPAIR_PONG = "com.hui455.moonear.FASTPAIR_PONG"
         const val EXTRA_LE_ADDR = "addr"
         /** 【对接广播】TRIGGER 的 extra：左耳电量（0-100，-1/缺失=不显示） */
         const val EXTRA_BATTERY_LEFT = "battery_left"

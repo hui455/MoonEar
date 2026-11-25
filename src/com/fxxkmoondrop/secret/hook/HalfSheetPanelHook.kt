@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret.hook
+package com.hui455.moonear.hook
 
 import android.content.Context
 import android.net.Uri
@@ -22,8 +22,8 @@ object HalfSheetPanelHook {
 
     fun install(module: XposedModule, cl: ClassLoader) {
         try {
-            val cls = com.fxxkmoondrop.secret.DexKitLocator.resolveOrFallback(
-                    cl, com.fxxkmoondrop.secret.DexKitLocator.DTHI, "dthi")
+            val cls = com.hui455.moonear.DexKitLocator.resolveOrFallback(
+                    cl, com.hui455.moonear.DexKitLocator.DTHI, "dthi")
             val m = cls.methods.firstOrNull { it.name == "onViewCreated" }
                     ?: cls.methods.firstOrNull { it.name == "onCreateView" }
             if (m == null) {
@@ -34,15 +34,15 @@ object HalfSheetPanelHook {
             module.hook(m).intercept { chain ->
                 val r = chain.proceed()
                 try {
-                    val root = com.fxxkmoondrop.secret.HookHelper.callMethod(chain.thisObject, "getView")
+                    val root = com.hui455.moonear.HookHelper.callMethod(chain.thisObject, "getView")
                             as? ViewGroup
                     if (root != null && root.findViewWithTag<View>(
-                                    com.fxxkmoondrop.secret.FastPairPanel.TAG) == null) {
+                                    com.hui455.moonear.FastPairPanel.TAG) == null) {
                         val ctx = root.context
-                        val panel = com.fxxkmoondrop.secret.FastPairPanel.buildView(ctx) { mode ->
+                        val panel = com.hui455.moonear.FastPairPanel.buildView(ctx) { mode ->
                             sendAnc(ctx, mode)
                         }
-                        panel.tag = com.fxxkmoondrop.secret.FastPairPanel.TAG
+                        panel.tag = com.hui455.moonear.FastPairPanel.TAG
                         root.addView(panel, ViewGroup.LayoutParams(
                                 ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT))
@@ -61,7 +61,7 @@ object HalfSheetPanelHook {
 
     private fun sendAnc(ctx: Context, mode: Int) {
         try {
-            val uri = Uri.parse("content://com.fxxkmoondrop.secret.prefs/dc_cmd").buildUpon()
+            val uri = Uri.parse("content://com.hui455.moonear.prefs/dc_cmd").buildUpon()
                     .appendQueryParameter("action", "set_anc")
                     .appendQueryParameter("mode", mode.toString())
                     .build()

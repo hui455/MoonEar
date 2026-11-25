@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret.ui.miuix
+package com.hui455.moonear.ui.miuix
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -45,7 +45,7 @@ internal fun MiuixAbout(bottomBar: (@Composable () -> Unit)? = null) {
         ) {
             Image(
                 painter = painterResource(
-                    com.fxxkmoondrop.secret.R.drawable.miuiix_earphone_case,
+                    com.hui455.moonear.R.drawable.miuiix_earphone_case,
                 ),
                 contentDescription = null,
                 contentScale = ContentScale.Fit,

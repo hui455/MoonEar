@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.os.Handler
 import android.util.Log
@@ -28,7 +28,8 @@ class GaiaPacketHandler(
     private val ancMapProvider: () -> IntArray,
     private val ancGetMapProvider: () -> IntArray?,
     private val batteryBroadcastSender: (Int, Int) -> Unit,
-    private val deviceControlCallbackProvider: () -> GaiaBleClient.DeviceControlCallback?
+    private val deviceControlCallbackProvider: () -> GaiaBleClient.DeviceControlCallback?,
+    private val touchPacket: (Int, Int, Int, ByteArray) -> Unit = { _, _, _, _ -> },
 ) {
     companion object {
         private const val TAG = "GaiaPacketHandler"
@@ -55,6 +56,10 @@ class GaiaPacketHandler(
                     " type=" + type + " cmd=0x" + Integer.toHexString(command) +
                     " " + payload.contentToString())
 
+            if (feature in listOf(GaiaCommands.F_TOUCHV2, GaiaCommands.F_TOUCHV3) && type in 2..3) {
+                handler.post { touchPacket(feature, type, command, payload) }
+                return
+            }
             val modeNotification = type == GaiaConstants.TYPE_NOTIFICATION && command == 0x01 &&
                     (feature == GaiaConstants.FEATURE_ANC_V2 || feature == GaiaConstants.F_AUDIO_CURATION)
             if (type != GaiaConstants.TYPE_RESPONSE && !modeNotification) return

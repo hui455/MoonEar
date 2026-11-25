@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.bluetooth.BluetoothDevice
 import android.content.ContentProvider
@@ -29,10 +29,10 @@ import android.os.ParcelFileDescriptor
  * 同时暴露 icon_ver，供 Hook 判断图标是否换过。
  *
  * 用法:
- *   content://com.fxxkmoondrop.secret.prefs/show_wind        -> _value=1/0
- *   content://com.fxxkmoondrop.secret.prefs/lang             -> _value=0/1/2
- *   content://com.fxxkmoondrop.secret.prefs/icon_ver         -> _value=<int>
- *   content://com.fxxkmoondrop.secret.prefs/moondrop_icon    -> openFile() 读 PNG 字节
+ *   content://com.hui455.moonear.prefs/show_wind        -> _value=1/0
+ *   content://com.hui455.moonear.prefs/lang             -> _value=0/1/2
+ *   content://com.hui455.moonear.prefs/icon_ver         -> _value=<int>
+ *   content://com.hui455.moonear.prefs/moondrop_icon    -> openFile() 读 PNG 字节
  */
 class PrefsProvider : ContentProvider() {
 
@@ -107,9 +107,9 @@ class PrefsProvider : ContentProvider() {
             when (arg) {
                 BluetoothDevice.ACTION_ACL_CONNECTED,
                 BluetoothDevice.ACTION_ACL_DISCONNECTED,
-                "com.fxxkmoondrop.secret.FASTPAIR_MODE_CHANGED",
-                "com.fxxkmoondrop.secret.FASTPAIR_MODE_REQUEST",
-                "com.fxxkmoondrop.secret.FASTPAIR_SHEET_CLOSED" -> HeadsetReceiver().onReceive(ctx, intent)
+                "com.hui455.moonear.FASTPAIR_MODE_CHANGED",
+                "com.hui455.moonear.FASTPAIR_MODE_REQUEST",
+                "com.hui455.moonear.FASTPAIR_SHEET_CLOSED" -> HeadsetReceiver().onReceive(ctx, intent)
                 else -> ctx.sendBroadcast(intent)
             }
         }
@@ -187,15 +187,15 @@ class PrefsProvider : ContentProvider() {
         private val HOOK_EVENTS = setOf(
             BluetoothDevice.ACTION_ACL_CONNECTED,
             BluetoothDevice.ACTION_ACL_DISCONNECTED,
-            "com.fxxkmoondrop.secret.FASTPAIR_MODE_CHANGED",
-            "com.fxxkmoondrop.secret.FASTPAIR_MODE_REQUEST",
-            "com.fxxkmoondrop.secret.FASTPAIR_SHEET_CLOSED",
-            "com.fxxkmoondrop.secret.ACTION_LE_ADDR_FOUND",
-            "com.fxxkmoondrop.secret.FASTPAIR_CONNECTED",
-            "com.fxxkmoondrop.secret.FASTPAIR_PONG",
+            "com.hui455.moonear.FASTPAIR_MODE_CHANGED",
+            "com.hui455.moonear.FASTPAIR_MODE_REQUEST",
+            "com.hui455.moonear.FASTPAIR_SHEET_CLOSED",
+            "com.hui455.moonear.ACTION_LE_ADDR_FOUND",
+            "com.hui455.moonear.FASTPAIR_CONNECTED",
+            "com.hui455.moonear.FASTPAIR_PONG",
         )
 
         /** dc_cmd 跨进程 uri */
-        const val DC_CMD_URI = "content://com.fxxkmoondrop.secret.prefs/dc_cmd"
+        const val DC_CMD_URI = "content://com.hui455.moonear.prefs/dc_cmd"
     }
 }

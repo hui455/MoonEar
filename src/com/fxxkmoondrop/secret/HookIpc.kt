@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -11,7 +11,7 @@ import android.net.Uri
 
 /** Authentication uses the host's Binder UID, never a module Context's package name. */
 internal object HookIpc {
-    const val APP = "com.fxxkmoondrop.secret"
+    const val APP = "com.hui455.moonear"
     const val GMS = "com.google.android.gms"
     const val SETTINGS = "com.android.settings"
     const val PERMISSION = "$APP.permission.HOOK_IPC"

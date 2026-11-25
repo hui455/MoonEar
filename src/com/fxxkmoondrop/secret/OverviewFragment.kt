@@ -1,4 +1,4 @@
-package com.fxxkmoondrop.secret
+package com.hui455.moonear
 
 import android.Manifest
 import android.app.Dialog
@@ -629,7 +629,7 @@ class OverviewFragment : Fragment() {
 
         // alpha1.4: 注册后台服务状态广播（电量/降噪更新）
         try {
-            val sf = IntentFilter("com.fxxkmoondrop.secret.STATE_UPDATED")
+            val sf = IntentFilter("com.hui455.moonear.STATE_UPDATED")
             HookIpc.registerInternal(requireContext(), stateReceiver, sf)
         } catch (_: Exception) { }
 
